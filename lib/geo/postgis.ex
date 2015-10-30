@@ -11,15 +11,19 @@ defmodule Geo.PostGIS do
         import Geo.PostGIS
 
         def example_query(geom) do
-          from location in Location, limit: 5, select: st_distance(location.geom, ^geom)  
+          from location in Location, limit: 5, select: st_distance(location.geom, ^geom)
         end
 
-      end  
+      end
   """
 
 
   defmacro st_distance(geometryA, geometryB) do
     quote do: fragment("ST_Distance(?,?)", unquote(geometryA), unquote(geometryB))
+  end
+
+  defmacro st_distance_sphere(geometryA, geometryB) do
+    quote do: fragment("ST_Distance_Sphere(?,?)", unquote(geometryA), unquote(geometryB))
   end
 
   defmacro st_dwithin(geometryA, geometryB, float) do
@@ -312,6 +316,10 @@ defmodule Geo.PostGIS do
 
   defmacro st_bd_m_poly_from_text(wkt, srid) do
     quote do: fragment("ST_BdMPolyFromText(?, ?)", unquote(wkt), unquote(srid))
+  end
+
+  defmacro st_transform(g, srid) do
+    quote do: fragment("ST_Transform(?, ?)", unquote(g), unquote(srid))
   end
 
 end
